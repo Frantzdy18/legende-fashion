@@ -1,0 +1,88 @@
+{% extends "shop/base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Mes commandes</h2>
+
+{% if user.is_staff %}
+<div class="alert alert-success">
+💰 Total ventes : <strong>${{ total_sales }} </strong>
+</div>
+{% endif %}
+
+{% if orders %}
+<table class="table table-striped shadow-sm">
+    <thead class="table-dark">
+        <tr>
+            <!-- AJOUTE ID COMMANDE -->
+            <th scope="col">ID Commande</th>
+
+            {% if user.is_staff %}
+            <th scope="col">Client</th>
+            <!-- AJOUTE ID USER -->
+            <th scope="col">ID User</th>
+            {% endif %}
+
+            <th scope="col">Produit</th>
+            <th scope="col">Prix ($)</th>
+            <th scope="col">Date d'achat</th>
+            <th scope="col">Statut</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for order in orders %}
+        <tr>
+
+            <!-- ID COMMANDE -->
+            <td>{{ order.id }}</td>
+
+            {% if user.is_staff %}
+            <td>{{ order.user.username }}</td>
+            <!-- ID USER -->
+            <td>{{ order.user.id }}</td>
+            {% endif %}
+
+            <td>{{ order.product.nom }}</td>
+            <td>{{ order.prix }}</td>
+            <td>{{ order.date|date:"d/m/Y H:i" }}</td>
+
+            <td>
+                {% if order.statut == "en_cours" %}
+                    <span class="badge bg-warning text-dark">🟡 En cours</span>
+
+                    {% if user.is_staff %}
+                    <br>
+                    <a href="{% url 'update_purchase_status' order.id 'expedie' %}" 
+                       class="btn btn-sm btn-primary mt-1">Expédié</a>
+                    {% endif %}
+
+                {% elif order.statut == "expedie" %}
+                    <span class="badge bg-info text-dark">🔵 Expédié</span>
+
+                    {% if user.is_staff %}
+                    <br>
+                    <a href="{% url 'mark_as_delivered' order.id %}" 
+                       class="btn btn-sm btn-success mt-1">Livré</a>
+                    {% endif %}
+
+                {% elif order.statut == "livre" %}
+                    <span class="badge bg-success">🟢 Livré</span>
+
+                {% else %}
+                    <span class="badge bg-secondary">Inconnu</span>
+                {% endif %}
+            </td>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+<div class="alert alert-info">
+    Vous n'avez aucune commande pour le moment.
+</div>
+{% endif %}
+
+<a href="{% url 'product_list' %}" class="btn btn-secondary mt-3">Retour à l'accueil</a>
+{% endblock %}

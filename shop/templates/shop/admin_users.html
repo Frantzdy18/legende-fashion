@@ -1,0 +1,31 @@
+{% extends "shop/base.html" %}
+
+{% block content %}
+<h2>👥 Clients de la plateforme</h2>
+
+<table class="table table-striped">
+<thead class="table-dark">
+<tr>
+<th>ID</th>
+<th>Username</th>
+<th>Email</th>
+<th>Profil</th>
+</tr>
+</thead>
+
+<tbody>
+{% for user in users %}
+<tr>
+<td>{{ user.id }}</td>
+<td>{{ user.username }}</td>
+<td>{{ user.email|default:"Non renseigné" }}</td>
+<td>
+<a href="{% url 'admin_user_profile' user.id %}" class="btn btn-sm btn-primary">
+Voir profil
+</a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}

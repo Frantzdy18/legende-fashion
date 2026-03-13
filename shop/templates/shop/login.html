@@ -1,0 +1,10 @@
+{% extends "shop/base.html" %}
+{% block content %}
+<h2>Connexion</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Se connecter</button>
+</form>
+<p class="mt-2">Pas encore de compte ? <a href="{% url 'signup' %}">Inscription</a></p>
+{% endblock %}

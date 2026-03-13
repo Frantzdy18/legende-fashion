@@ -1,0 +1,34 @@
+{% extends "shop/base.html" %}
+{% block content %}
+
+{% if request.user.is_staff %}
+<h2>{{ title }}</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {{ form.nom.label_tag }} 
+    {{ form.nom }}
+
+    {{ form.description.label_tag }} 
+    {{ form.description }}
+
+    {{ form.prix.label_tag }} 
+    {{ form.prix }}
+
+    {{ form.quantite.label_tag }} 
+    {{ form.quantite }}
+
+    {{ form.image.label_tag }} 
+    {{ form.image }}
+
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+    <a href="{% url 'product_list' %}" class="btn btn-secondary">Annuler</a>
+</form>
+
+{% else %}
+<p class="text-danger">⚠️ Vous n'avez pas la permission d'accéder à cette page.</p>
+<a href="{% url 'product_list' %}" class="btn btn-secondary">Retour</a>
+{% endif %}
+
+{% endblock %}

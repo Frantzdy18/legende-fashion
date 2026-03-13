@@ -1,0 +1,35 @@
+{% extends "shop/base.html" %}
+
+{% block content %}
+<h2>Profil de {{ user_obj.username }}</h2>
+<p><strong>Email:</strong> {{ user_obj.email }}</p>
+<p><strong>ID:</strong> {{ user_obj.id }}</p>
+
+<h3 class="mt-4">Commandes de cet utilisateur</h3>
+{% if orders %}
+<table class="table table-striped">
+<thead class="table-dark">
+<tr>
+<th>ID</th>
+<th>Produit</th>
+<th>Prix</th>
+<th>Date</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody>
+{% for order in orders %}
+<tr>
+<td>{{ order.id }}</td>
+<td>{{ order.product.nom }}</td>
+<td>$ {{ order.prix }}</td>
+<td>{{ order.date|date:"d/m/Y H:i" }}</td>
+<td>{{ order.statut }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% else %}
+<p>Aucune commande pour cet utilisateur.</p>
+{% endif %}
+{% endblock %}

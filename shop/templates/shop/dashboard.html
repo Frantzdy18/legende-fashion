@@ -1,0 +1,97 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Dashboard de {{ request.user.username }}</h2>
+    
+    <!-- Admin stats -->
+    {% if request.user.is_staff %}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm text-center">
+                💰<h5>Total ventes</h5>
+                <strong>$ {{ total_sales }} </strong>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm text-center">
+                📦<h5>Commandes</h5>
+                <strong>{{ total_orders }}</strong>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm text-center">
+                👥<h5>Clients</h5>
+                <strong>{{ total_clients }}</strong>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm text-center">
+                👕<h5>Produits</h5>
+                <strong>{{ total_products }}</strong>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Solde -->
+    <div class="card mb-4 p-3 shadow-sm">
+        <h4>Votre solde : {{ profile.balance }} $</h4>
+        <a href="{% url 'demo_topup' %}" class="btn btn-success mt-2">Ajouter du solde</a>
+        <a href="{% url 'demo_withdraw' %}" class="btn btn-warning mt-2">Retirer du solde</a>
+    </div>
+
+    <!-- Recherche produit -->
+    <form method="get" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="🔎 Rechercher un produit" value="{{ request.GET.q }}">
+            <button class="btn btn-primary" type="submit">Rechercher</button>
+        </div>
+    </form>
+
+    <!-- Produits -->
+    <h3>Produits disponibles</h3>
+
+    {% if request.user.is_staff %}
+        <a href="{% url 'product_create' %}" class="btn btn-success mb-3">➕ Ajouter un produit</a>
+    {% endif %}
+
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4 mb-3">
+            <div class="card p-3 shadow-sm">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top" style="height:200px; object-fit:cover;">
+                {% else %}
+                <img src="{% static 'images/default_product.png' %}" class="card-img-top" style="height:200px; object-fit:cover;">
+                {% endif %}
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.nom }}</h5>
+                    <p class="card-text">Prix : {{ product.prix }} $</p>
+                    <p class="card-text">Stock : {{ product.quantite }}</p>
+
+                    {% if product.quantite > 0 %}
+                        {% if profile.balance >= product.prix %}
+                        <a href="{% url 'buy_product' product.pk %}" class="btn btn-primary">Acheter</a>
+                        {% else %}
+                        <button class="btn btn-secondary" disabled>Solde insuffisant</button>
+                        {% endif %}
+                    {% else %}
+                        <button class="btn btn-danger" disabled>Rupture de stock</button>
+                    {% endif %}
+
+                    {% if request.user.is_staff %}
+                    <div class="mt-2 d-flex justify-content-between">
+                        <a href="{% url 'product_update' product.pk %}" class="btn btn-primary btn-sm w-48">Modifier</a>
+                        <a href="{% url 'product_delete' product.pk %}" class="btn btn-danger btn-sm w-48">Supprimer</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

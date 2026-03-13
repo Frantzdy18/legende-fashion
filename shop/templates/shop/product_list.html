@@ -1,0 +1,144 @@
+{% extends "shop/base.html" %}
+
+{% block content %}
+
+<h2 class="mb-4">Produits Legende Fashion</h2>
+
+<!-- Ajouter produit sèlman pou admin -->
+{% if request.user.is_staff %}
+<a href="{% url 'product_create' %}" class="btn btn-success mb-4">
+    ➕ Ajouter un produit
+</a>
+{% endif %}
+
+<!-- Afficher messages -->
+{% if messages %}
+<div class="mb-3">
+    {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="row g-4">
+    {% for product in products %}
+    <div class="col-lg-4 col-md-6 col-sm-12">
+        <div class="card h-100 shadow-sm border-0 rounded-3">
+            
+            <!-- Image Container -->
+            <div class="img-container position-relative overflow-hidden rounded-top" style="height:250px; cursor: pointer;" 
+                 data-bs-toggle="modal" data-bs-target="#imageModal">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.nom }}" 
+                     class="w-100 h-100 product-img" style="object-fit: cover; display: block;">
+                {% else %}
+                <div class="d-flex align-items-center justify-content-center bg-light" style="height:100%;">
+                    <span class="text-muted">Pas d'image</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Acheter bouton -->
+            {% if product.quantite > 0 %}
+                <a href="{% url 'buy_product' product.id %}" class="btn btn-success">Acheter</a>
+
+                <!-- NOUVO BOUTON PANIER -->
+                <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary mt-4">
+                    🛒 Ajouter au panier
+                </a>
+
+            {% else %}
+                <button class="btn btn-secondary" disabled>Rupture de stock</button>
+            {% endif %}
+
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ product.nom }}</h5>
+
+                <!-- Scrollable description -->
+                <div class="description-box flex-grow-1 mb-2">
+                    {{ product.description }}
+                </div>
+
+                <!-- Price & Quantité buttons -->
+                <div class="mb-3 d-flex gap-2 mt-2">
+                    <span class="btn btn-outline-success btn-sm flex-grow-1 text-center">
+                        Prix: $ {{ product.prix }} 
+                    </span>
+                    <span class="btn btn-outline-secondary btn-sm flex-grow-1 text-center">
+                        Quantité: {{ product.quantite }}
+                    </span>
+                </div>
+
+                <!-- Modifier / Supprimer buttons pou admin sèlman -->
+                {% if request.user.is_staff %}
+                <div class="mt-auto d-flex justify-content-between">
+                    <a href="{% url 'product_update' product.id %}" class="btn btn-primary btn-sm w-48">
+                        Modifier
+                    </a>
+                    <a href="{% url 'product_delete' product.id %}" class="btn btn-danger btn-sm w-48">
+                        Supprimer
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Single Modal fixed size pou tout image -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content bg-transparent border-0 d-flex justify-content-center align-items-center">
+      <div class="modal-body p-0">
+        <img id="modalImage" src="" alt="Produit" class="img-fluid rounded" style="max-width:100%; max-height:80vh; object-fit:contain;">
+      </div>
+      <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+
+<!-- JS pou chanje image nan modal -->
+<script>
+const modal = document.getElementById('imageModal');
+const modalImg = document.getElementById('modalImage');
+const imgs = document.querySelectorAll('.img-container img');
+
+imgs.forEach(img => {
+    img.addEventListener('click', () => {
+        modalImg.src = img.src;
+    });
+});
+</script>
+
+<style>
+.description-box {
+    max-height: 80px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.description-box::-webkit-scrollbar {
+    width: 5px;
+}
+.description-box::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.3);
+    border-radius: 2px;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.img-container img {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    object-fit: cover;
+}
+</style>
+
+{% endblock %}

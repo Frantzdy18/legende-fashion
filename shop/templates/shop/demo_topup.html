@@ -1,0 +1,48 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="card shadow-sm p-4 mx-auto" style="max-width:500px;">
+
+    <div class="text-center mb-3">
+        <img src="{% static 'images/moncash_logo.png' %}" alt="MonCash" style="height:60px;">
+        <h3 class="mt-2">Rechargement MonCash</h3>
+    </div>
+
+    <p class="fw-bold text-center">
+        Votre solde : <span class="text-success">$ {{ balance }} </span>
+    </p>
+
+    {% if message %}
+    <div class="alert alert-info text-center">
+        {{ message }}
+    </div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label class="form-label">Montant à ajouter</label>
+
+            <input
+                type="number"
+                name="montant"
+                class="form-control"
+                step="0.01"
+                min="1"
+                placeholder="Ex : 10"
+                required
+            >
+        </div>
+
+        <div class="d-grid">
+            <button type="submit" class="btn btn-success">
+                💰 Recharger mon solde
+            </button>
+        </div>
+
+    </form>
+
+</div>
+{% endblock %}

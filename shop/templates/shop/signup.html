@@ -1,0 +1,79 @@
+{% extends "shop/base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card shadow p-4 mx-auto" style="max-width:400px;">
+        
+        <h3 class="text-center mb-4">Inscription</h3>
+
+        <form method="post" id="registerForm">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                {{ form.username }}
+                <div id="usernameError" class="text-danger small"></div>
+            
+            </div>
+            <div class="mb-3">
+            <label class="form-label">Email (facultatif)</label>
+            {{ form.email }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                {{ form.password1 }}
+                <div id="passwordError" class="text-danger small"></div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Confirm Password</label>
+                {{ form.password2 }}
+                <div id="confirmError" class="text-danger small"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                S'inscrire
+            </button>
+
+        </form>
+
+        <p class="text-center mt-3">
+            Déjà un compte ?
+            <a href="{% url 'login' %}">Se connecter</a>
+        </p>
+
+    </div>
+</div>
+
+<script>
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    const password = document.getElementById('id_password1').value;
+    const confirm = document.getElementById('id_password2').value;
+
+    const passwordError = document.getElementById('passwordError');
+    const confirmError = document.getElementById('confirmError');
+
+    let valid = true;
+    passwordError.textContent = '';
+    confirmError.textContent = '';
+
+    // Regex: minimum 8 chars, 1 majuscule, 1 chiffre
+    const pattern = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+    if (!pattern.test(password)) {
+        passwordError.textContent = "Mot de passe invalide ! Au moins 8 caractères, 1 majuscule et 1 chiffre.";
+        valid = false;
+    }
+
+    if (password !== confirm) {
+        confirmError.textContent = "Les mots de passe ne correspondent pas !";
+        valid = false;
+    }
+
+    if (!valid) e.preventDefault();
+});
+</script>
+
+{% endblock %}

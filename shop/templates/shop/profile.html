@@ -1,0 +1,21 @@
+{% extends "shop/base.html" %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <h2> Mon Profil</h2>
+
+    <!-- Foto itilizatè -->
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_profile_pic" class="form-label"> Photo de profil</label>
+            <input type="file" class="form-control" id="id_profile_pic" name="profile_pic">
+        </div>
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+    </form>
+
+    <p><strong>Nom :</strong> {{ request.user.username }}</p>
+    <p><strong>Email :</strong> {{ request.user.email }}</p>
+    <p><strong>Balance :</strong> {{ request.user.profile.balance }} $</p>
+</div>
+{% endblock %}

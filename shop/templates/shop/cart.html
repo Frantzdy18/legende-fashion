@@ -1,0 +1,50 @@
+{% extends "shop/base.html" %}
+
+{% block content %}
+
+<h2 class="mb-4">🛒 Votre panier</h2>
+
+{% if products %}
+
+<table class="table table-bordered">
+
+<thead class="table-dark">
+<tr>
+<th>Produit</th>
+<th>Prix</th>
+<th>Quantité</th>
+<th>Total</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+{% for item in products %}
+<tr>
+<td>{{ item.product.nom }}</td>
+<td>{{ item.product.prix }} $</td>
+<td>{{ item.quantity }}</td>
+<td>{{ item.subtotal }} $</td>
+<td>
+<a href="{% url 'remove_from_cart' item.product.id %}" class="btn btn-danger btn-sm">
+Supprimer
+</a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+
+</table>
+
+<h4>Total panier: {{ total }} $</h4>
+
+<!-- Bouton Commander -->
+<a href="{% url 'checkout' %}" class="btn btn-success">
+    Commander
+</a>
+
+{% else %}
+<p>Votre panier est vide 🛒</p>
+{% endif %}
+
+{% endblock %}

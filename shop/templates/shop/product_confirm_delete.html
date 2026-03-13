@@ -1,0 +1,18 @@
+{% extends "shop/base.html" %}
+{% block content %}
+<h2>Supprimer le produit</h2>
+<p>Voulez-vous vraiment supprimer "{{ product.nom }}" ?</p>
+
+{% if request.user.is_staff %}
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+    <a href="{% url 'product_list' %}" class="btn btn-secondary">Annuler</a>
+</form>
+{% else %}
+
+<p class="text-danger">Vous n'avez pas la permission de supprimer ce produit.</p>
+<a href="{% url 'product_list' %}" class="btn btn-secondary">Retour</a>
+{% endif %}
+
+{% endblock %}

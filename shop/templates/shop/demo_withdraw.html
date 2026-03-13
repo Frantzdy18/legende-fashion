@@ -1,0 +1,34 @@
+{% extends "shop/base.html" %}
+
+{% block content %}
+
+{% if request.user.is_staff %}
+<h2 class="mb-4">Retrait MonCash (Admin seulement)</h2>
+
+<!-- Afficher messages -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<p>Solde actuel: <strong>${{ balance }}</strong></p>
+
+<form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="montant" class="form-label">Montant à retirer</label>
+        <input type="number" step="0.01" name="montant" id="montant" class="form-control" placeholder="0.00" required>
+    </div>
+    <button type="submit" class="btn btn-danger">Retirer</button>
+</form>
+
+{% else %}
+<div class="alert alert-warning">
+    ⚠️ Vous n'avez pas la permission d'accéder à cette page.
+</div>
+{% endif %}
+
+{% endblock %}

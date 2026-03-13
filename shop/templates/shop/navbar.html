@@ -1,0 +1,93 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+  <div class="container-fluid">
+
+    <!-- Logo / Marque -->
+    <a class="navbar-brand" href="{% url 'home' %}">Legende Fashion</a>
+
+    <!-- Bouton toggle mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Basculer la navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Liens navbar -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-center">
+
+        <!-- Accueil -->
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home' %}">
+            🏠 Accueil
+          </a>
+        </li>
+
+        <!-- Ajouter produit -->
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'product_create' %}">
+            ➕ Ajouter un produit
+          </a>
+        </li>
+
+        <!-- 👥 CLIENTS (AJOUTE SAN RETIRE ANYEN) -->
+        {% if user.is_staff %}
+
+        <li class="nav-item me-3">
+          <a class="nav-link btn btn-info text-white" href="{% url 'admin_users' %}">
+            👥 Clients
+          </a>
+        </li>
+        {% endif %}
+
+        <!-- Dropdown utilisateur ak foto -->
+        <li class="nav-item dropdown ms-3">
+          <a class="nav-link dropdown-toggle d-flex align-items-center"
+             href="#"
+             role="button"
+             data-bs-toggle="dropdown"
+             aria-expanded="false">
+
+              <!-- Foto profil won -->
+              <img src="{% if request.user.profile.profile_pic %}{{ request.user.profile.profile_pic.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}"
+                   alt="Profil"
+                   class="rounded-circle me-2"
+                   style="width:35px; height:35px; object-fit:cover;">
+              {{ request.user.username }}
+
+          </a>
+
+          <ul class="dropdown-menu dropdown-menu-end">
+
+            <!-- PROFILE -->
+            <li>
+              <a class="dropdown-item" href="{% url 'profile' %}">
+                👤 Mon Profil
+              </a>
+            </li>
+
+            <!-- Mes commandes -->
+            <li>
+              <a class="dropdown-item" href="{% url 'orders' %}">
+                📦 Mes commandes
+              </a>
+            </li>
+
+            <li><hr class="dropdown-divider"></li>
+
+            <!-- Logout -->
+            <li>
+              <a class="dropdown-item text-danger" href="{% url 'logout' %}">
+                🚪 Déconnexion
+              </a>
+            </li>
+
+          </ul>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+</nav>
